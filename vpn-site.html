@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NexusVPN — Encrypted. Everywhere.</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #060a10;
+    --surface: #0d1520;
+    --surface2: #111d2e;
+    --border: #1a3a5c;
+    --accent: #00d4ff;
+    --accent2: #00ff88;
+    --accent3: #ff4d6a;
+    --text: #c8e0f0;
+    --text-muted: #4a7a9b;
+    --glow: 0 0 20px rgba(0,212,255,0.4);
+    --glow-green: 0 0 20px rgba(0,255,136,0.4);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ANIMATED GRID BACKGROUND */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* SCAN LINE */
+  body::after {
+    content: '';
+    position: fixed;
+    top: -100%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(0,212,255,0.6), transparent);
+    animation: scan 6s linear infinite;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  @keyframes scan {
+    0% { top: -2px; }
+    100% { top: 100vh; }
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 40px;
+    background: rgba(6,10,16,0.9);
+    border-bottom: 1px solid var(--border);
+    backdrop-filter: blur(20px);
+  }
+
+  .logo {
+    font-family: 'Orbitron', monospace;
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: 4px;
+    color: var(--accent);
+    text-shadow: var(--glow);
+  }
+
+  .logo span { color: var(--accent2); }
+
+  .nav-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  .status-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent3);
+    box-shadow: 0 0 8px var(--accent3);
+    transition: all 0.5s;
+  }
+
+  .status-dot.connected {
+    background: var(--accent2);
+    box-shadow: 0 0 12px var(--accent2);
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-dot {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.4); opacity: 0.7; }
+  }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    z-index: 2;
+    padding: 140px 40px 60px;
+    text-align: center;
+  }
+
+  .hero-tag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 6px;
+    color: var(--accent);
+    margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+
+  .hero-title {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(36px, 6vw, 72px);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+  }
+
+  .hero-title .line1 { color: #fff; }
+  .hero-title .line2 {
+    color: var(--accent);
+    text-shadow: var(--glow);
+  }
+
+  .hero-sub {
+    font-size: 18px;
+    color: var(--text-muted);
+    font-weight: 400;
+    letter-spacing: 1px;
+    max-width: 500px;
+    margin: 0 auto 40px;
+  }
+
+  /* CONNECTION HUB */
+  .connection-hub {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 60px;
+  }
+
+  .connect-btn {
+    position: relative;
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    background: radial-gradient(circle at center, rgba(0,212,255,0.1), transparent 70%);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: 'Orbitron', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--accent);
+    text-shadow: var(--glow);
+    box-shadow: var(--glow), inset 0 0 40px rgba(0,212,255,0.05);
+    transition: all 0.4s;
+    overflow: hidden;
+  }
+
+  .connect-btn::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    background: linear-gradient(135deg, var(--accent), var(--accent2)) border-box;
+    -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: destination-out;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+
+  .connect-btn::after {
+    content: '';
+    position: absolute;
+    width: 200%; height: 200%;
+    border-radius: 50%;
+    border: 1px solid rgba(0,212,255,0.2);
+    animation: ripple-idle 3s ease-in-out infinite;
+  }
+
+  .connect-btn:hover::before { opacity: 1; }
+  .connect-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 40px rgba(0,212,255,0.6), inset 0 0 60px rgba(0,212,255,0.1);
+  }
+
+  .connect-btn.connecting {
+    border-color: var(--accent2);
+    color: var(--accent2);
+    animation: connecting-pulse 0.8s ease-in-out infinite alternate;
+  }
+
+  .connect-btn.connected {
+    border-color: var(--accent2);
+    color: var(--accent2);
+    background: radial-gradient(circle at center, rgba(0,255,136,0.15), transparent 70%);
+    box-shadow: var(--glow-green), inset 0 0 40px rgba(0,255,136,0.05);
+  }
+
+  .connect-btn.connected::after {
+    border-color: rgba(0,255,136,0.3);
+    animation: ripple-connected 2s ease-out infinite;
+  }
+
+  @keyframes ripple-idle {
+    0% { transform: translate(-25%, -25%) scale(0.8); opacity: 0.3; }
+    100% { transform: translate(-25%, -25%) scale(1); opacity: 0; }
+  }
+
+  @keyframes ripple-connected {
+    0% { transform: translate(-25%, -25%) scale(0.5); opacity: 0.6; }
+    100% { transform: translate(-25%, -25%) scale(1.2); opacity: 0; }
+  }
+
+  @keyframes connecting-pulse {
+    from { box-shadow: 0 0 20px rgba(0,255,136,0.3); }
+    to { box-shadow: 0 0 60px rgba(0,255,136,0.8); }
+  }
+
+  .btn-icon {
+    font-size: 36px;
+    line-height: 1;
+    transition: transform 0.3s;
+  }
+
+  .connect-btn:hover .btn-icon { transform: scale(1.1); }
+
+  .current-location {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    color: var(--text-muted);
+    letter-spacing: 2px;
+    transition: color 0.5s;
+  }
+
+  .current-location.active { color: var(--accent2); }
+
+  /* STATS BAR */
+  .stats-bar {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    gap: 2px;
+    margin-bottom: 60px;
+    flex-wrap: wrap;
+    padding: 0 40px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 16px 28px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    min-width: 140px;
+  }
+
+  .stat-card:first-child { border-radius: 8px 0 0 8px; }
+  .stat-card:last-child { border-radius: 0 8px 8px 0; }
+
+  .stat-value {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 20px;
+    color: var(--accent);
+    text-shadow: var(--glow);
+    transition: all 0.5s;
+  }
+
+  .stat-value.active { color: var(--accent2); text-shadow: var(--glow-green); }
+  .stat-label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+
+  /* MAIN CONTENT */
+  .main-content {
+    position: relative;
+    z-index: 2;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 30px 80px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .section-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+
+  /* SEARCH */
+  .search-box {
+    position: relative;
+    flex: 1;
+    max-width: 340px;
+  }
+
+  .search-box input {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 10px 16px 10px 40px;
+    color: var(--text);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+
+  .search-box input::placeholder { color: var(--text-muted); }
+  .search-box input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 12px rgba(0,212,255,0.2);
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 12px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 14px;
+  }
+
+  /* REGION FILTERS */
+  .region-filters {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+  }
+
+  .filter-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 7px 16px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .filter-btn.active {
+    background: rgba(0,212,255,0.1);
+    border-color: var(--accent);
+    color: var(--accent);
+    box-shadow: 0 0 8px rgba(0,212,255,0.2);
+  }
+
+  /* LOCATION GRID */
+  .location-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 8px;
+  }
+
+  .location-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: all 0.25s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .location-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 2px;
+    background: var(--accent);
+    transform: scaleY(0);
+    transition: transform 0.25s;
+  }
+
+  .location-card:hover {
+    border-color: rgba(0,212,255,0.4);
+    background: var(--surface2);
+    transform: translateX(3px);
+    box-shadow: -4px 0 20px rgba(0,212,255,0.1);
+  }
+
+  .location-card:hover::before { transform: scaleY(1); }
+
+  .location-card.active {
+    border-color: var(--accent2);
+    background: rgba(0,255,136,0.06);
+    transform: translateX(3px);
+  }
+
+  .location-card.active::before {
+    background: var(--accent2);
+    transform: scaleY(1);
+  }
+
+  .flag {
+    font-size: 24px;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .loc-info { flex: 1; min-width: 0; }
+
+  .loc-name {
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 0.2s;
+  }
+
+  .location-card:hover .loc-name { color: var(--accent); }
+  .location-card.active .loc-name { color: var(--accent2); }
+
+  .loc-region {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  .loc-ping {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .loc-ping.good { color: var(--accent2); }
+  .loc-ping.medium { color: #ffd700; }
+  .loc-ping.high { color: var(--accent3); }
+
+  .ping-bar {
+    width: 30px;
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    margin-top: 4px;
+    overflow: hidden;
+  }
+
+  .ping-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.3s;
+  }
+
+  /* CONNECTION OVERLAY */
+  .overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(6,10,16,0.95);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s;
+  }
+
+  .overlay.show {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .overlay-content {
+    text-align: center;
+    max-width: 400px;
+    padding: 40px;
+  }
+
+  .overlay-ring {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 30px;
+  }
+
+  .ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px solid transparent;
+  }
+
+  .ring-1 {
+    border-top-color: var(--accent);
+    border-right-color: var(--accent);
+    animation: spin 1s linear infinite;
+  }
+
+  .ring-2 {
+    inset: 12px;
+    border-bottom-color: var(--accent2);
+    border-left-color: var(--accent2);
+    animation: spin 1.4s linear infinite reverse;
+  }
+
+  .ring-3 {
+    inset: 24px;
+    border-top-color: rgba(0,212,255,0.4);
+    animation: spin 2s linear infinite;
+  }
+
+  .ring-center {
+    position: absolute;
+    inset: 34px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,212,255,0.3), transparent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .overlay-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: left;
+    margin-top: 20px;
+  }
+
+  .overlay-step {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: all 0.4s;
+  }
+
+  .overlay-step.show {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .overlay-step.done { color: var(--accent2); }
+  .step-indicator { width: 16px; text-align: center; }
+
+  .overlay-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 3px;
+    margin-bottom: 8px;
+  }
+
+  .overlay-subtitle {
+    font-size: 14px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+  }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    z-index: 300;
+    background: var(--surface2);
+    border: 1px solid var(--accent2);
+    border-radius: 8px;
+    padding: 16px 24px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    color: var(--accent2);
+    box-shadow: var(--glow-green);
+    transform: translateY(20px);
+    opacity: 0;
+    transition: all 0.4s;
+    max-width: 300px;
+  }
+
+  .toast.show {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .toast-title {
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 4px;
+    color: #fff;
+  }
+
+  /* FOOTER */
+  footer {
+    position: relative;
+    z-index: 2;
+    border-top: 1px solid var(--border);
+    padding: 30px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .footer-logo {
+    font-family: 'Orbitron', monospace;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    color: var(--accent);
+    opacity: 0.6;
+  }
+
+  .footer-text {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+  }
+
+  /* PING ANIMATION */
+  @keyframes ping-anim {
+    0% { opacity: 0; transform: translateX(-5px); }
+    100% { opacity: 1; transform: translateX(0); }
+  }
+
+  .location-card { animation: ping-anim 0.2s ease both; }
+
+  /* SPEED COUNTER */
+  .speed-display {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 22px;
+    transition: all 0.3s;
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">NEXUS<span>VPN</span></div>
+  <div class="nav-status">
+    <div class="status-dot" id="navDot"></div>
+    <span id="navStatus">NOT PROTECTED</span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-tag">// MILITARY-GRADE ENCRYPTION</div>
+  <div class="hero-title">
+    <div class="line1">BROWSE WITHOUT</div>
+    <div class="line2">BOUNDARIES</div>
+  </div>
+  <p class="hero-sub">Select a server location and establish your encrypted tunnel in seconds.</p>
+</section>
+
+<!-- CONNECTION HUB -->
+<div class="connection-hub">
+  <button class="connect-btn" id="mainConnectBtn" onclick="toggleConnect()">
+    <span class="btn-icon" id="btnIcon">⏻</span>
+    <span id="btnText">CONNECT</span>
+  </button>
+  <div class="current-location" id="currentLocationLabel">▸ NO SERVER SELECTED</div>
+</div>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat-card">
+    <div class="stat-value" id="stat-ping">— ms</div>
+    <div class="stat-label">Latency</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value speed-display" id="stat-down">— Mbps</div>
+    <div class="stat-label">Download</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value speed-display" id="stat-up">— Mbps</div>
+    <div class="stat-label">Upload</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value" id="stat-ip">—.—.—.—</div>
+    <div class="stat-label">Masked IP</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value" id="stat-proto">AES-256</div>
+    <div class="stat-label">Encryption</div>
+  </div>
+</div>
+
+<!-- MAIN LOCATIONS -->
+<main class="main-content">
+  <div class="section-header">
+    <div class="section-title">// SERVER LOCATIONS <span style="color:var(--text-muted);font-size:11px" id="serverCount"></span></div>
+    <div class="search-box">
+      <span class="search-icon">⌕</span>
+      <input type="text" id="searchInput" placeholder="Search country or city..." oninput="filterLocations()">
+    </div>
+  </div>
+
+  <div class="region-filters" id="regionFilters">
+    <button class="filter-btn active" onclick="filterRegion('all',this)">All Regions</button>
+    <button class="filter-btn" onclick="filterRegion('Europe',this)">🌍 Europe</button>
+    <button class="filter-btn" onclick="filterRegion('Americas',this)">🌎 Americas</button>
+    <button class="filter-btn" onclick="filterRegion('Asia',this)">🌏 Asia</button>
+    <button class="filter-btn" onclick="filterRegion('Oceania',this)">🏝 Oceania</button>
+    <button class="filter-btn" onclick="filterRegion('Africa',this)">🌐 Africa</button>
+    <button class="filter-btn" onclick="filterRegion('Middle East',this)">🕌 Middle East</button>
+  </div>
+
+  <div class="location-grid" id="locationGrid"></div>
+</main>
+
+<!-- CONNECTION OVERLAY -->
+<div class="overlay" id="overlay">
+  <div class="overlay-content">
+    <div class="overlay-ring">
+      <div class="ring ring-1"></div>
+      <div class="ring ring-2"></div>
+      <div class="ring ring-3"></div>
+      <div class="ring-center">🔒</div>
+    </div>
+    <div class="overlay-title" id="overlayTitle">CONNECTING</div>
+    <div class="overlay-subtitle" id="overlaySubtitle">Establishing secure tunnel...</div>
+    <div class="overlay-steps" id="overlaySteps">
+      <div class="overlay-step" id="step1"><span class="step-indicator">○</span>Initializing encryption keys</div>
+      <div class="overlay-step" id="step2"><span class="step-indicator">○</span>Authenticating with server</div>
+      <div class="overlay-step" id="step3"><span class="step-indicator">○</span>Establishing VPN tunnel</div>
+      <div class="overlay-step" id="step4"><span class="step-indicator">○</span>Masking IP address</div>
+      <div class="overlay-step" id="step5"><span class="step-indicator">○</span>Verifying connection</div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <div class="toast-title" id="toastTitle">CONNECTED</div>
+  <div id="toastMsg">Secured via NexusVPN</div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">NEXUSVPN</div>
+  <div class="footer-text">END-TO-END ENCRYPTED · NO LOGS POLICY · AES-256-GCM</div>
+</footer>
+
+<script>
+const locations = [
+  // Europe
+  { flag: '🇬🇧', name: 'London', region: 'Europe', ping: 12 },
+  { flag: '🇩🇪', name: 'Frankfurt', region: 'Europe', ping: 14 },
+  { flag: '🇫🇷', name: 'Paris', region: 'Europe', ping: 16 },
+  { flag: '🇳🇱', name: 'Amsterdam', region: 'Europe', ping: 15 },
+  { flag: '🇨🇭', name: 'Zurich', region: 'Europe', ping: 18 },
+  { flag: '🇸🇪', name: 'Stockholm', region: 'Europe', ping: 22 },
+  { flag: '🇳🇴', name: 'Oslo', region: 'Europe', ping: 24 },
+  { flag: '🇩🇰', name: 'Copenhagen', region: 'Europe', ping: 21 },
+  { flag: '🇫🇮', name: 'Helsinki', region: 'Europe', ping: 28 },
+  { flag: '🇮🇹', name: 'Milan', region: 'Europe', ping: 20 },
+  { flag: '🇮🇹', name: 'Rome', region: 'Europe', ping: 22 },
+  { flag: '🇪🇸', name: 'Madrid', region: 'Europe', ping: 25 },
+  { flag: '🇪🇸', name: 'Barcelona', region: 'Europe', ping: 24 },
+  { flag: '🇵🇹', name: 'Lisbon', region: 'Europe', ping: 28 },
+  { flag: '🇦🇹', name: 'Vienna', region: 'Europe', ping: 17 },
+  { flag: '🇧🇪', name: 'Brussels', region: 'Europe', ping: 14 },
+  { flag: '🇵🇱', name: 'Warsaw', region: 'Europe', ping: 25 },
+  { flag: '🇨🇿', name: 'Prague', region: 'Europe', ping: 19 },
+  { flag: '🇭🇺', name: 'Budapest', region: 'Europe', ping: 23 },
+  { flag: '🇷🇴', name: 'Bucharest', region: 'Europe', ping: 30 },
+  { flag: '🇧🇬', name: 'Sofia', region: 'Europe', ping: 32 },
+  { flag: '🇬🇷', name: 'Athens', region: 'Europe', ping: 35 },
+  { flag: '🇨🇾', name: 'Nicosia', region: 'Europe', ping: 38 },
+  { flag: '🇭🇷', name: 'Zagreb', region: 'Europe', ping: 26 },
+  { flag: '🇷🇸', name: 'Belgrade', region: 'Europe', ping: 28 },
+  { flag: '🇸🇰', name: 'Bratislava', region: 'Europe', ping: 20 },
+  { flag: '🇸🇮', name: 'Ljubljana', region: 'Europe', ping: 22 },
+  { flag: '🇺🇦', name: 'Kyiv', region: 'Europe', ping: 34 },
+  { flag: '🇲🇩', name: 'Chisinau', region: 'Europe', ping: 36 },
+  { flag: '🇮🇸', name: 'Reykjavik', region: 'Europe', ping: 40 },
+  { flag: '🇮🇪', name: 'Dublin', region: 'Europe', ping: 18 },
+  { flag: '🇱🇺', name: 'Luxembourg', region: 'Europe', ping: 13 },
+
+  // Americas
+  { flag: '🇺🇸', name: 'New York', region: 'Americas', ping: 8 },
+  { flag: '🇺🇸', name: 'Los Angeles', region: 'Americas', ping: 10 },
+  { flag: '🇺🇸', name: 'Chicago', region: 'Americas', ping: 9 },
+  { flag: '🇺🇸', name: 'Miami', region: 'Americas', ping: 11 },
+  { flag: '🇺🇸', name: 'Dallas', region: 'Americas', ping: 12 },
+  { flag: '🇺🇸', name: 'Seattle', region: 'Americas', ping: 13 },
+  { flag: '🇺🇸', name: 'Atlanta', region: 'Americas', ping: 10 },
+  { flag: '🇺🇸', name: 'Denver', region: 'Americas', ping: 14 },
+  { flag: '🇺🇸', name: 'Phoenix', region: 'Americas', ping: 13 },
+  { flag: '🇺🇸', name: 'Boston', region: 'Americas', ping: 9 },
+  { flag: '🇺🇸', name: 'San Francisco', region: 'Americas', ping: 11 },
+  { flag: '🇨🇦', name: 'Toronto', region: 'Americas', ping: 10 },
+  { flag: '🇨🇦', name: 'Vancouver', region: 'Americas', ping: 13 },
+  { flag: '🇨🇦', name: 'Montreal', region: 'Americas', ping: 11 },
+  { flag: '🇨🇦', name: 'Calgary', region: 'Americas', ping: 15 },
+  { flag: '🇲🇽', name: 'Mexico City', region: 'Americas', ping: 20 },
+  { flag: '🇧🇷', name: 'São Paulo', region: 'Americas', ping: 45 },
+  { flag: '🇧🇷', name: 'Rio de Janeiro', region: 'Americas', ping: 48 },
+  { flag: '🇦🇷', name: 'Buenos Aires', region: 'Americas', ping: 60 },
+  { flag: '🇨🇱', name: 'Santiago', region: 'Americas', ping: 65 },
+  { flag: '🇨🇴', name: 'Bogotá', region: 'Americas', ping: 55 },
+  { flag: '🇵🇪', name: 'Lima', region: 'Americas', ping: 70 },
+  { flag: '🇪🇨', name: 'Quito', region: 'Americas', ping: 68 },
+  { flag: '🇺🇾', name: 'Montevideo', region: 'Americas', ping: 62 },
+  { flag: '🇵🇦', name: 'Panama City', region: 'Americas', ping: 40 },
+  { flag: '🇨🇷', name: 'San José', region: 'Americas', ping: 42 },
+
+  // Asia
+  { flag: '🇯🇵', name: 'Tokyo', region: 'Asia', ping: 85 },
+  { flag: '🇯🇵', name: 'Osaka', region: 'Asia', ping: 88 },
+  { flag: '🇰🇷', name: 'Seoul', region: 'Asia', ping: 90 },
+  { flag: '🇨🇳', name: 'Hong Kong', region: 'Asia', ping: 95 },
+  { flag: '🇸🇬', name: 'Singapore', region: 'Asia', ping: 100 },
+  { flag: '🇹🇼', name: 'Taipei', region: 'Asia', ping: 95 },
+  { flag: '🇮🇳', name: 'Mumbai', region: 'Asia', ping: 110 },
+  { flag: '🇮🇳', name: 'Bangalore', region: 'Asia', ping: 115 },
+  { flag: '🇮🇳', name: 'Chennai', region: 'Asia', ping: 118 },
+  { flag: '🇮🇩', name: 'Jakarta', region: 'Asia', ping: 125 },
+  { flag: '🇲🇾', name: 'Kuala Lumpur', region: 'Asia', ping: 105 },
+  { flag: '🇵🇭', name: 'Manila', region: 'Asia', ping: 130 },
+  { flag: '🇹🇭', name: 'Bangkok', region: 'Asia', ping: 108 },
+  { flag: '🇻🇳', name: 'Ho Chi Minh', region: 'Asia', ping: 112 },
+  { flag: '🇰🇭', name: 'Phnom Penh', region: 'Asia', ping: 120 },
+  { flag: '🇵🇰', name: 'Karachi', region: 'Asia', ping: 130 },
+  { flag: '🇧🇩', name: 'Dhaka', region: 'Asia', ping: 135 },
+  { flag: '🇱🇰', name: 'Colombo', region: 'Asia', ping: 128 },
+  { flag: '🇲🇳', name: 'Ulaanbaatar', region: 'Asia', ping: 140 },
+  { flag: '🇰🇿', name: 'Almaty', region: 'Asia', ping: 75 },
+  { flag: '🇺🇿', name: 'Tashkent', region: 'Asia', ping: 80 },
+  { flag: '🇳🇵', name: 'Kathmandu', region: 'Asia', ping: 125 },
+
+  // Oceania
+  { flag: '🇦🇺', name: 'Sydney', region: 'Oceania', ping: 155 },
+  { flag: '🇦🇺', name: 'Melbourne', region: 'Oceania', ping: 158 },
+  { flag: '🇦🇺', name: 'Brisbane', region: 'Oceania', ping: 160 },
+  { flag: '🇦🇺', name: 'Perth', region: 'Oceania', ping: 170 },
+  { flag: '🇳🇿', name: 'Auckland', region: 'Oceania', ping: 175 },
+  { flag: '🇳🇿', name: 'Wellington', region: 'Oceania', ping: 178 },
+  { flag: '🇫🇯', name: 'Suva', region: 'Oceania', ping: 185 },
+
+  // Africa
+  { flag: '🇿🇦', name: 'Johannesburg', region: 'Africa', ping: 145 },
+  { flag: '🇿🇦', name: 'Cape Town', region: 'Africa', ping: 148 },
+  { flag: '🇳🇬', name: 'Lagos', region: 'Africa', ping: 95 },
+  { flag: '🇰🇪', name: 'Nairobi', region: 'Africa', ping: 110 },
+  { flag: '🇪🇬', name: 'Cairo', region: 'Africa', ping: 55 },
+  { flag: '🇲🇦', name: 'Casablanca', region: 'Africa', ping: 45 },
+  { flag: '🇹🇳', name: 'Tunis', region: 'Africa', ping: 50 },
+  { flag: '🇩🇿', name: 'Algiers', region: 'Africa', ping: 48 },
+  { flag: '🇬🇭', name: 'Accra', region: 'Africa', ping: 90 },
+  { flag: '🇨🇮', name: 'Abidjan', region: 'Africa', ping: 92 },
+  { flag: '🇸🇳', name: 'Dakar', region: 'Africa', ping: 75 },
+  { flag: '🇹🇿', name: 'Dar es Salaam', region: 'Africa', ping: 115 },
+  { flag: '🇪🇹', name: 'Addis Ababa', region: 'Africa', ping: 120 },
+
+  // Middle East
+  { flag: '🇦🇪', name: 'Dubai', region: 'Middle East', ping: 65 },
+  { flag: '🇦🇪', name: 'Abu Dhabi', region: 'Middle East', ping: 66 },
+  { flag: '🇸🇦', name: 'Riyadh', region: 'Middle East', ping: 70 },
+  { flag: '🇶🇦', name: 'Doha', region: 'Middle East', ping: 68 },
+  { flag: '🇮🇱', name: 'Tel Aviv', region: 'Middle East', ping: 48 },
+  { flag: '🇹🇷', name: 'Istanbul', region: 'Middle East', ping: 40 },
+  { flag: '🇹🇷', name: 'Ankara', region: 'Middle East', ping: 42 },
+  { flag: '🇮🇷', name: 'Tehran', region: 'Middle East', ping: 72 },
+  { flag: '🇮🇶', name: 'Baghdad', region: 'Middle East', ping: 75 },
+  { flag: '🇯🇴', name: 'Amman', region: 'Middle East', ping: 52 },
+  { flag: '🇱🇧', name: 'Beirut', region: 'Middle East', ping: 50 },
+  { flag: '🇰🇼', name: 'Kuwait City', region: 'Middle East', ping: 68 },
+  { flag: '🇧🇭', name: 'Manama', region: 'Middle East', ping: 70 },
+];
+
+let selectedLocation = null;
+let isConnected = false;
+let isConnecting = false;
+let currentRegion = 'all';
+let speedInterval = null;
+
+function getPingClass(ping) {
+  if (ping < 50) return 'good';
+  if (ping < 120) return 'medium';
+  return 'high';
+}
+
+function getPingBarWidth(ping) {
+  return Math.min(100, Math.max(20, (ping / 200) * 100));
+}
+
+function getPingBarColor(ping) {
+  if (ping < 50) return 'var(--accent2)';
+  if (ping < 120) return '#ffd700';
+  return 'var(--accent3)';
+}
+
+function renderLocations() {
+  const query = document.getElementById('searchInput').value.toLowerCase();
+  const grid = document.getElementById('locationGrid');
+  
+  const filtered = locations.filter(loc => {
+    const matchesRegion = currentRegion === 'all' || loc.region === currentRegion;
+    const matchesSearch = loc.name.toLowerCase().includes(query) || loc.region.toLowerCase().includes(query);
+    return matchesRegion && matchesSearch;
+  });
+
+  document.getElementById('serverCount').textContent = `(${filtered.length} servers)`;
+
+  grid.innerHTML = filtered.map((loc, i) => {
+    const pingClass = getPingClass(loc.ping);
+    const barWidth = getPingBarWidth(loc.ping);
+    const barColor = getPingBarColor(loc.ping);
+    const isActive = selectedLocation && selectedLocation.name === loc.name ? 'active' : '';
+    return `
+      <div class="location-card ${isActive}" onclick="selectLocation(${locations.indexOf(loc)})" style="animation-delay:${i * 0.015}s">
+        <div class="flag">${loc.flag}</div>
+        <div class="loc-info">
+          <div class="loc-name">${loc.name}</div>
+          <div class="loc-region">${loc.region}</div>
+        </div>
+        <div class="loc-ping">
+          <div class="${pingClass}">${loc.ping}ms</div>
+          <div class="ping-bar"><div class="ping-fill" style="width:${barWidth}%;background:${barColor}"></div></div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function filterLocations() { renderLocations(); }
+
+function filterRegion(region, btn) {
+  currentRegion = region;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderLocations();
+}
+
+function selectLocation(index) {
+  selectedLocation = locations[index];
+  document.getElementById('currentLocationLabel').textContent = `▸ ${selectedLocation.flag} ${selectedLocation.name.toUpperCase()} SELECTED`;
+  document.getElementById('currentLocationLabel').classList.add('active');
+  renderLocations();
+
+  if (isConnected) {
+    disconnect(true);
+    setTimeout(() => startConnect(), 600);
+  }
+}
+
+function toggleConnect() {
+  if (!selectedLocation) {
+    showToastMsg('SELECT A SERVER', 'Choose a location from the list below', '#ff4d6a');
+    return;
+  }
+  if (isConnecting) return;
+  if (isConnected) {
+    disconnect(false);
+  } else {
+    startConnect();
+  }
+}
+
+function startConnect() {
+  if (!selectedLocation) return;
+  isConnecting = true;
+  
+  const btn = document.getElementById('mainConnectBtn');
+  const overlay = document.getElementById('overlay');
+  
+  btn.classList.add('connecting');
+  document.getElementById('btnText').textContent = 'CONNECTING';
+  document.getElementById('btnIcon').textContent = '⟳';
+  overlay.classList.add('show');
+  document.getElementById('overlayTitle').textContent = 'CONNECTING';
+  document.getElementById('overlaySubtitle').textContent = `Route: ${selectedLocation.flag} ${selectedLocation.name}`;
+
+  const steps = ['step1','step2','step3','step4','step5'];
+  steps.forEach(s => {
+    const el = document.getElementById(s);
+    el.classList.remove('show','done');
+    el.querySelector('.step-indicator').textContent = '○';
+  });
+
+  let delay = 400;
+  steps.forEach((s, i) => {
+    setTimeout(() => {
+      const el = document.getElementById(s);
+      el.classList.add('show');
+      el.querySelector('.step-indicator').textContent = '◉';
+    }, delay + i * 500);
+    setTimeout(() => {
+      const el = document.getElementById(s);
+      el.classList.add('done');
+      el.querySelector('.step-indicator').textContent = '✓';
+    }, delay + i * 500 + 400);
+  });
+
+  setTimeout(() => {
+    overlay.classList.remove('show');
+    isConnecting = false;
+    isConnected = true;
+    onConnected();
+  }, delay + steps.length * 500 + 500);
+}
+
+function onConnected() {
+  const btn = document.getElementById('mainConnectBtn');
+  btn.classList.remove('connecting');
+  btn.classList.add('connected');
+  document.getElementById('btnText').textContent = 'PROTECTED';
+  document.getElementById('btnIcon').textContent = '🔒';
+
+  document.getElementById('navDot').classList.add('connected');
+  document.getElementById('navStatus').textContent = 'PROTECTED · ' + selectedLocation.name.toUpperCase();
+
+  const maskedIP = `${Math.floor(Math.random()*200)+10}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`;
+  document.getElementById('stat-ip').textContent = maskedIP;
+  document.getElementById('stat-ip').classList.add('active');
+  document.getElementById('stat-ping').textContent = `${selectedLocation.ping} ms`;
+  document.getElementById('stat-ping').classList.add('active');
+
+  startSpeedSim();
+  showToastMsg(`CONNECTED — ${selectedLocation.name}`, `${selectedLocation.flag} Tunnel active · IP masked`, 'var(--accent2)');
+}
+
+function disconnect(silent) {
+  isConnected = false;
+  clearInterval(speedInterval);
+
+  const btn = document.getElementById('mainConnectBtn');
+  btn.classList.remove('connected','connecting');
+  document.getElementById('btnText').textContent = 'CONNECT';
+  document.getElementById('btnIcon').textContent = '⏻';
+
+  document.getElementById('navDot').classList.remove('connected');
+  document.getElementById('navStatus').textContent = 'NOT PROTECTED';
+  document.getElementById('stat-ip').textContent = '—.—.—.—';
+  document.getElementById('stat-ip').classList.remove('active');
+  document.getElementById('stat-ping').textContent = '— ms';
+  document.getElementById('stat-ping').classList.remove('active');
+  document.getElementById('stat-down').textContent = '— Mbps';
+  document.getElementById('stat-down').classList.remove('active');
+  document.getElementById('stat-up').textContent = '— Mbps';
+  document.getElementById('stat-up').classList.remove('active');
+
+  if (!silent) showToastMsg('DISCONNECTED', 'VPN tunnel closed', '#ff4d6a', true);
+}
+
+function startSpeedSim() {
+  const baseDl = 60 + Math.random() * 80;
+  const baseUl = 20 + Math.random() * 30;
+  let tick = 0;
+
+  function update() {
+    const jitter = () => (Math.random() - 0.5) * 8;
+    const dl = (baseDl + jitter()).toFixed(1);
+    const ul = (baseUl + jitter()).toFixed(1);
+    document.getElementById('stat-down').textContent = dl + ' Mbps';
+    document.getElementById('stat-down').classList.add('active');
+    document.getElementById('stat-up').textContent = ul + ' Mbps';
+    document.getElementById('stat-up').classList.add('active');
+    tick++;
+  }
+
+  update();
+  speedInterval = setInterval(update, 2000);
+}
+
+function showToastMsg(title, msg, color, isDisconnect) {
+  const toast = document.getElementById('toast');
+  document.getElementById('toastTitle').textContent = title;
+  document.getElementById('toastMsg').textContent = msg;
+  toast.style.borderColor = color || 'var(--accent2)';
+  toast.style.color = color || 'var(--accent2)';
+  toast.style.boxShadow = `0 0 20px ${color || 'rgba(0,255,136,0.4)'}`;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3500);
+}
+
+// Init
+renderLocations();
+</script>
+</body>
+</html>
